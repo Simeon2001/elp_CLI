@@ -12,11 +12,13 @@ import (
 	"encoding/json"
 	"bytes"
 	"io/ioutil"
+	"reflect"
 )
 
-func connect(json_data){
+func connect(json_data []byte){
 	hello := bytes.NewBuffer(json_data)
 	req, err := http.NewRequest(http.MethodPost, "http://127.0.0.1:8000/api/query", hello)
+	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
 		fmt.Println(err)}
 	client := &http.Client{}
@@ -56,6 +58,7 @@ to quickly create a Cobra application.`,
 				fmt.Println(err)}
 			
 			connect(jsonData)
+			fmt.Println(reflect.TypeOf(jsonData))
 		}
 		
 	},
