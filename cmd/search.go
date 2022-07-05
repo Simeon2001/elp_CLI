@@ -8,7 +8,33 @@ import (
 	"fmt"
 
 	"github.com/spf13/cobra"
+	"net/http"
+	"encoding/json"
+	"bytes"
+	"io/ioutil"
 )
+
+func connect(json_data){
+	hello := bytes.NewBuffer(json_data)
+	req, err := http.NewRequest(http.MethodPost, "http://127.0.0.1:8000/api/query", hello)
+	if err != nil {
+		fmt.Println(err)}
+	client := &http.Client{}
+	resp, err := client.Do(req)
+	if err != nil {
+		fmt.Println("Errored when sending request to the server")
+		return
+	}
+
+	defer resp.Body.Close()
+	responseBody, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(resp.Status)
+	fmt.Println(string(responseBody))
+}
 
 // searchCmd represents the search command
 var searchCmd = &cobra.Command{
@@ -21,7 +47,17 @@ Cobra is a CLI library for Go that empowers applications.
 This application is a tool to generate the needed files
 to quickly create a Cobra application.`,
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("search called")
+		for _,info := range args {
+			data := info
+			values := map[string]string{"search": data}
+			jsonData, err := json.Marshal(values)
+			
+			if err != nil {
+				fmt.Println(err)}
+			
+			connect(jsonData)
+		}
+		
 	},
 }
 
