@@ -5,38 +5,23 @@ Copyright © 2022 NAME HERE <EMAIL ADDRESS>
 package cmd
 
 import (
+	"elp-cli/request"
+	"encoding/json"
 	"fmt"
 	"strings"
+
 	"github.com/spf13/cobra"
-	"net/http"
-	"encoding/json"
-	"bytes"
-	"io/ioutil"
 )
 
-
-func connect(json_data []byte){
-	hello := bytes.NewBuffer(json_data)
-	req, err := http.NewRequest(http.MethodPost, "http://127.0.0.1:8000/api/query", hello)
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	if err != nil {
-		fmt.Println(err)}
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Errored when sending request to the server")
-		return
-	}
-
-	defer resp.Body.Close()
-	responseBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(resp.Status)
-	fmt.Println(string(responseBody))
+type Output []struct {
+	Title string  `json:"title"`
+	Command string `json:"command"`
+	Framework string `json:"framework"`
 }
+
+var data Output
+
+var link string = "http://127.0.0.1:8000/api/query"
 
 
 // searchCmd represents the search command
@@ -56,7 +41,13 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println(err)}
 		
-		connect(jsonData)
+		_,out := request.Post(link,jsonData)
+		ata := []byte(out)
+		json.Unmarshal(ata,&data)
+		fmt.Println(data)
+		for _, value := range data{
+		fmt.Println(value.Command,value.Framework,value.Title)
+		}
 		
 	},
 }

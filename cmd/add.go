@@ -9,36 +9,17 @@ import (
 	"os"
 	"bufio"
 	"github.com/spf13/cobra"
-	"net/http"
 	"encoding/json"
-	"bytes"
-	"io/ioutil"
 	"strings"
+	"elp-cli/request"
 )
 
-func conne(json_data []byte){
-	hello := bytes.NewBuffer(json_data)
-	req, err := http.NewRequest(http.MethodPost, "http://127.0.0.1:8000/api/add", hello)
-	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
-	if err != nil {
-		fmt.Println(err)}
-	client := &http.Client{}
-	resp, err := client.Do(req)
-	if err != nil {
-		fmt.Println("Errored when sending request to the server")
-		return
-	}
-
-	defer resp.Body.Close()
-	responseBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(resp.Status)
-	fmt.Println(string(responseBody))
+type searchit struct {
+	Message string 
 }
 
+var out searchit
+var url string = "http://127.0.0.1:8000/api/add"
 
 // addCmd represents the add command
 var addCmd = &cobra.Command{
@@ -70,13 +51,15 @@ to quickly create a Cobra application.`,
 		command := strings.Trim(commands, "\r\n")
 
 		values := map[string]string{"framework": framework,"title": title,"command":command}
-		fmt.Print(values)
 		jsonData, err := json.Marshal(values)
 			
 			if err != nil {
 				fmt.Println(err)}
 			
-			conne(jsonData)
+			_,data := request.Post(url,jsonData)
+			ata := []byte(data)
+			json.Unmarshal(ata,&out)
+			fmt.Println(out.Message)
 
 
 	},
