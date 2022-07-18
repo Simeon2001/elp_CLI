@@ -44,9 +44,9 @@ to quickly create a Cobra application.`,
 		_,out := request.Post(link,jsonData)
 		ata := []byte(out)
 		json.Unmarshal(ata,&data)
-		fmt.Println(data)
+		fmt.Println("Framework/language   ", "      description   ", "                   command")
 		for _, value := range data{
-		fmt.Println(value.Command,value.Framework,value.Title)
+		fmt.Println(value.Framework + " |           "  + value.Title + "            |  " + value.Command)
 		}
 		
 	},
