@@ -41,7 +41,9 @@ to quickly create a Cobra application.`,
 		if err != nil {
 			fmt.Println(err)}
 		
-		_,out := request.Post(link,jsonData)
+		_,out,err := request.Post(link,jsonData)
+		if err != nil {
+			fmt.Println("check your internet connection or server is down")}
 		ata := []byte(out)
 		json.Unmarshal(ata,&data)
 		fmt.Println("Framework/language   ", "      description   ", "                   command")

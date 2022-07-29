@@ -1,29 +1,27 @@
 package request
 
 import (
-	"fmt"
 	"bytes"
+	"errors"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"os"
 )
-func Post(url string, json_data []byte)(string, string){
+func Post(url string, json_data []byte)(string, string, error){
 	hello := bytes.NewBuffer(json_data)
 	req, err := http.NewRequest(http.MethodPost, url, hello)
 	req.Header.Set("Content-Type", "application/json; charset=UTF-8")
 	if err != nil {
-		fmt.Println(err)}
+		os.Exit(-1)}
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println("Errored when sending request to the server")
-		fmt.Println(err)
+		fmt.Println(errors.New("errored when sending request to the server"))
+		os.Exit(-1)
 	}
 
 	defer resp.Body.Close()
 	responseBody, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		fmt.Println(err)
-	}
-	
-	return resp.Status, string(responseBody)
+	return resp.Status, string(responseBody), err
 }

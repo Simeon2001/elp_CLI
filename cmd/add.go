@@ -5,13 +5,15 @@ Copyright © 2022 CISCOQUAN <jesusanyasimeon@gmail.com>
 package cmd
 
 import (
+	"bufio"
+	"elp-cli/request"
+	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
-	"bufio"
-	"github.com/spf13/cobra"
-	"encoding/json"
 	"strings"
-	"elp-cli/request"
+
+	"github.com/spf13/cobra"
 )
 
 type searchit struct {
@@ -57,19 +59,17 @@ to quickly create a Cobra application.`,
 			values := map[string]string{"framework": framework,"title": title,"command":command}
 			jsonData, err := json.Marshal(values)
 				
-				if err != nil {
-					fmt.Println(err)}
-				
-				status,data := request.Post(url,jsonData)
-				if string(status) == "201 Created"{
-					ata := []byte(data)
-					json.Unmarshal(ata,&out)
-					fmt.Println(out.Message)
-					fmt.Println(status)
+			if err != nil {
+				fmt.Println(err)}
+			
+			_, data, err := request.Post(url,jsonData)
+			if err != nil {
+				fmt.Println(errors.New("check your internet connection or server is down"))}
+			ata := []byte(data)
+			json.Unmarshal(ata,&out)
+			fmt.Println(out.Message)
 					
-				}else{
-					fmt.Println("check your internet connection or server is down")	
-				}
+				
 		}
 
 	},
