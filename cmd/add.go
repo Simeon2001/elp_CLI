@@ -50,17 +50,27 @@ to quickly create a Cobra application.`,
 		commands, _ := readit.ReadString('\n')
 		command := strings.Trim(commands, "\r\n")
 
-		values := map[string]string{"framework": framework,"title": title,"command":command}
-		jsonData, err := json.Marshal(values)
-			
-			if err != nil {
-				fmt.Println(err)}
-			
-			_,data := request.Post(url,jsonData)
-			ata := []byte(data)
-			json.Unmarshal(ata,&out)
-			fmt.Println(out.Message)
+		if command == "" || title == "" || framework ==""{
+			fmt.Println("fields can't be empty")
+		}else{
 
+			values := map[string]string{"framework": framework,"title": title,"command":command}
+			jsonData, err := json.Marshal(values)
+				
+				if err != nil {
+					fmt.Println(err)}
+				
+				status,data := request.Post(url,jsonData)
+				if string(status) == "201 Created"{
+					ata := []byte(data)
+					json.Unmarshal(ata,&out)
+					fmt.Println(out.Message)
+					fmt.Println(status)
+					
+				}else{
+					fmt.Println("check your internet connection or server is down")	
+				}
+		}
 
 	},
 }
