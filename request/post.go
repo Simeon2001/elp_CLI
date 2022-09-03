@@ -17,7 +17,7 @@ func Post(url string, json_data []byte)(string, string, error){
 	client := &http.Client{}
 	resp, err := client.Do(req)
 	if err != nil {
-		fmt.Println(errors.New("errored when sending request to the server"))
+		fmt.Println(errors.New("error when sending request to the server"))
 		os.Exit(-1)
 	}
 
